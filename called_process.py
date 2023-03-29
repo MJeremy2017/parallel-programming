@@ -1,2 +1,2 @@
-value = input("input something")
+value = input("input something: ")
 print("got value", value)
