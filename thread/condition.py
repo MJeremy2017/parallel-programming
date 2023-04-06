@@ -13,15 +13,14 @@ class Consumer(Thread):
         super().__init__()
 
     def run(self):
-        tid = threading.get_ident()
         while True:
             condition.acquire()
             if len(q) == 0:
-                print(tid, "no items in queue, waiting ...")
+                print(self.name, "no items in queue, waiting ...")
                 condition.wait()
             else:
                 v = q.pop(0)
-                print(tid, "Consumed items:", v)
+                print(self.name, "Consumed items:", v)
                 condition.notify()
                 condition.release()
                 time.sleep(3)
@@ -35,11 +34,11 @@ class Producer(Thread):
         while True:
             condition.acquire()
             if len(q) == 10:
-                print("queue is full, waiting ...")
+                print(self.name, ": queue is full, waiting ...")
                 condition.wait()
             v = random.randint(0, 100)
             q.append(v)
-            print("Produced item:", v)
+            print(self.name, "Produced item:", v)
             condition.notify()
             condition.release()
             time.sleep(5)
