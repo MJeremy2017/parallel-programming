@@ -1,5 +1,4 @@
 import random
-import threading
 import time
 from threading import Thread, Condition
 
