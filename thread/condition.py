@@ -19,11 +19,12 @@ class Consumer(Thread):
             if len(q) == 0:
                 print(tid, "no items in queue, waiting ...")
                 condition.wait()
-            v = q.pop(0)
-            print(tid, "Consumed items:", v)
-            condition.notify()
-            condition.release()
-            time.sleep(3)
+            else:
+                v = q.pop(0)
+                print(tid, "Consumed items:", v)
+                condition.notify()
+                condition.release()
+                time.sleep(3)
 
 
 class Producer(Thread):
@@ -47,8 +48,10 @@ class Producer(Thread):
 if __name__ == '__main__':
     c1 = Consumer()
     c2 = Consumer()
-    p = Producer()
+    p1 = Producer()
+    p2 = Producer()
 
     c1.start()
     c2.start()
-    p.start()
+    p1.start()
+    p2.start()
