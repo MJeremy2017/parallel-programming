@@ -1,6 +1,7 @@
 import random
 import time
 from threading import Thread, Condition
+from utils import get_now
 
 # by default initialize with a Rlock
 condition = Condition()
@@ -13,16 +14,15 @@ class Consumer(Thread):
 
     def run(self):
         while True:
-            condition.acquire()
-            if len(q) == 0:
-                print(self.name, "no items in queue, waiting ...")
-                condition.wait()
-            else:
-                v = q.pop(0)
-                print(self.name, "Consumed items:", v)
-                condition.notify()
-                condition.release()
-                time.sleep(3)
+            with condition:
+                if len(q) == 0:
+                    print(get_now(), self.name, "no items in queue, waiting ...")
+                    condition.wait()
+                else:
+                    v = q.pop(0)
+                    print(get_now(), self.name, "Consumed items:", v)
+                    condition.notify()
+            time.sleep(3)
 
 
 class Producer(Thread):
@@ -31,15 +31,14 @@ class Producer(Thread):
 
     def run(self):
         while True:
-            condition.acquire()
-            if len(q) == 10:
-                print(self.name, ": queue is full, waiting ...")
-                condition.wait()
-            v = random.randint(0, 100)
-            q.append(v)
-            print(self.name, "Produced item:", v)
-            condition.notify()
-            condition.release()
+            with condition:
+                if len(q) == 10:
+                    print(get_now(), self.name, ": queue is full, waiting ...")
+                    condition.wait()
+                v = random.randint(0, 100)
+                q.append(v)
+                print(get_now(), self.name, "Produced item:", v)
+                condition.notify()
             time.sleep(5)
 
 
