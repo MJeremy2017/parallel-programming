@@ -3,8 +3,8 @@ import time
 
 
 def foo(i):
-    print("function called in process", i)
-    time.sleep(4)
+    print(multiprocessing.current_process().name, "function called in process", i)
+    time.sleep(2)
 
 
 if __name__ == '__main__':
@@ -12,7 +12,7 @@ if __name__ == '__main__':
     ps = []
     # starting new process has a lot overhead
     for i in range(5):
-        p = multiprocessing.Process(target=foo, args=(i,))
+        p = multiprocessing.Process(target=foo, args=(i,), name=f"process-{i}")
         ps.append(p)
         p.start()
 
